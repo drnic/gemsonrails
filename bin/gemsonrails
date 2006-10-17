@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'active_support'
+require 'optparse'
+require 'gemsonrails'
+
+templates = File.dirname(__FILE__) + '/../templates/'
+
+OPTIONS = {
+  :rails_root => '.'
+}
+parser = OptionParser.new do |opts|
+  opts.banner = <<BANNER
+Enable your Rails application to link and freeze
+RubyGems just like Rails Plugins. Enjoy explicit
+version numbers, gem dependencies, and more!
+
+Usage: #{File.basename($0)} [--apply-to <rails app path>]
+
+Options are:
+BANNER
+  opts.separator ""
+  opts.on("-a", "--apply-to=PATH", String,
+          "Root path of your rails application",
+          "Default: .") { |OPTIONS[:rails_root]| }
+  opts.parse!(ARGV)
+end
+
+plugins    = File.join(OPTIONS[:rails_root], 'vendor', 'plugins')
+gems_path  = File.join(plugins, 'gemsonrails')
+tasks_path = File.join(gems_path, 'tasks')
+task_templates = Dir[File.join(templates, '*.rake')]
+
+FileUtils.rm_rf gems_path
+
+Dir.mkdir gems_path
+Dir.chdir gems_path do
+  template = File.open(templates + 'init.rb','r') {|f| f.readlines.join}
+  File.open('init.rb', 'w') {|file| file << template }
+end
+
+Dir.mkdir tasks_path
+Dir.chdir tasks_path do
+  task_templates.each do |template_name|
+    task_name = File.basename(template_name).sub(/\Atasks_/,'')
+    template = File.open(template_name,'r') {|f| f.readlines.join}
+    File.open(task_name, 'w') {|file| file << template }
+  end
+end
+
+puts "Installed gems_to_rails #{GemsOnRails::VERSION::STRING} to #{gems_path}"
+
