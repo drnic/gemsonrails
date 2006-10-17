@@ -14,6 +14,7 @@ EMAIL = "drnicwilliams@gmail.com"
 DESCRIPTION = "Link or freeze RubyGems into your rails apps, instead of plugins"
 HOMEPATH = 'http://gemsonrails.rubyforge.org'
 BIN_FILES = %w( gemsonrails )
+RUBYFORGE_PROJECT = 'gemsonrails'
 
 
 NAME = "gemsonrails"
@@ -39,6 +40,7 @@ spec =
         s.name = NAME
         s.version = VERS
         s.platform = Gem::Platform::RUBY
+        s.rubyforge_project = RUBYFORGE_PROJECT
         s.has_rdoc = true
         s.extra_rdoc_files = ["README", "CHANGELOG"]
         s.rdoc_options += RDOC_OPTS + ['--exclude', '^(examples|extras)/']
