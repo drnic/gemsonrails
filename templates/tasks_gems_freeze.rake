@@ -24,7 +24,20 @@ namespace :gems do
     
     chdir gems_dir, :verbose => false do
       mkdir_p target_dir, :verbose => false
-      Gem::Installer.new(path).unpack(target_dir)
+      (gem = Gem::Installer.new(path)).unpack(target_dir)
+      chdir target_dir, :verbose => false do
+        # TODO
+        #require 'pp'
+        #pp gem
+        #pp gem.methods.sort
+        if !File.exists?('init.rb') #&& gem.autorequire
+          File.open('init.rb', 'w') do |file|
+            file << <<-eos
+#require something
+eos
+          end
+        end
+      end
       puts "Unpacked #{gem_name} #{version} to '#{target_dir}'"
     end
   end
