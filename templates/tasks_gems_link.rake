@@ -1,7 +1,16 @@
 namespace :gems do
   desc "Link a RubyGem into this Rails application; init.rb will be loaded on startup."
   task :link do
-    raise "No gem specified" unless gem_name = ENV['GEM']
+    gem_name = ENV['GEM']
+		unless gem_name
+		  puts <<-eos
+Parameters:
+  GEM      Name of gem (required)
+
+  
+eos
+      break
+		end
 
     require 'rubygems'
     Gem.manage_gems
@@ -37,8 +46,7 @@ eos
 require 'rubygems'
 Gem.manage_gems
 gem = Gem.cache.search('#{gem.name}').sort_by { |g| g.version }.last
-version ||= gem.version.version
-path = Gem::UnpackCommand.new.get_path(gem.name, version)
+path = gem.full_gem_path
 Dir[File.join(path, "/**/tasks/**/*.rake")].sort.each { |ext| load ext }
 eos
         end
