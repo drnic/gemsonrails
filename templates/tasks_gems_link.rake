@@ -19,7 +19,7 @@ eos
     version ||= gem.version.version rescue nil
     
     unless gem && path = Gem::UnpackCommand.new.get_path(gem_name, version)
-      raise "No gem #{gem_name} #{version} is installed.  Do 'gem list #{gem_name}' to see what you have available."
+      raise "No gem #{gem_name} is installed.  Try 'gem install #{gem_name}' to install the gem."
     end
     
     gems_dir = File.join(RAILS_ROOT, 'vendor', 'gems')
@@ -46,6 +46,7 @@ eos
 require 'rubygems'
 Gem.manage_gems
 gem = Gem.cache.search('#{gem.name}').sort_by { |g| g.version }.last
+raise \"Gem '#{gem.name}' is not installed\" if gem.nil?
 path = gem.full_gem_path
 Dir[File.join(path, "/**/tasks/**/*.rake")].sort.each { |ext| load ext }
 eos
