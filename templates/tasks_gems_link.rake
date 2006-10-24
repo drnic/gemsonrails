@@ -36,7 +36,11 @@ eos
 require 'rubygems'
 Gem.manage_gems
 gem = Gem.cache.search('#{gem.name}').sort_by { |g| g.version }.last
-require gem.autorequire if gem.autorequire
+if gem.autorequire
+  require gem.autorequire
+else
+  require '#{gem.name}'
+end
 eos
         end
         File.open(File.join('tasks', 'load_tasks.rake'), 'w') do |file|
