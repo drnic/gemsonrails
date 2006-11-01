@@ -1,8 +1,7 @@
 namespace :gems do
   desc "Link a RubyGem into this Rails application; init.rb will be loaded on startup."
   task :link do
-    gem_name = ENV['GEM']
-		unless gem_name
+		unless gem_name = ENV['GEM']
 		  puts <<-eos
 Parameters:
   GEM      Name of gem (required)

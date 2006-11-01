@@ -1,8 +1,7 @@
 namespace :gems do
   desc "Unfreeze/unlink a RubyGem from this Rails application"
   task :unfreeze do
-    gem_name = ENV['GEM']
-		unless gem_name
+		unless gem_name = ENV['GEM']
 		  puts <<-eos
 Parameters:
   GEM      Name of gem (required)

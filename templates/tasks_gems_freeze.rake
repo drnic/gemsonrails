@@ -1,7 +1,7 @@
 namespace :gems do
   desc "Freeze a RubyGem into this Rails application; init.rb will be loaded on startup."
   task :freeze do
-		unless gem_name
+		unless gem_name = ENV["GEM"]
 		  puts <<-eos
 Parameters:
   GEM      Name of gem (required)
