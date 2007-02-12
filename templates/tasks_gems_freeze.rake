@@ -1,7 +1,7 @@
 namespace :gems do
   desc "Freeze a RubyGem into this Rails application; init.rb will be loaded on startup."
   task :freeze do
-		unless gem_name = ENV["GEM"]
+		unless gem_name = ENV['GEM']
 		  puts <<-eos
 Parameters:
   GEM      Name of gem (required)
@@ -32,7 +32,9 @@ eos
     
     chdir gems_dir, :verbose => false do
       mkdir_p target_dir, :verbose => false
-      (gem = Gem::Installer.new(path)).unpack(target_dir)
+      abs_target_dir = File.join(Dir.pwd, target_dir)
+      
+      (gem = Gem::Installer.new(path)).unpack(abs_target_dir)
       chdir target_dir, :verbose => false do
         # TODO
         #require 'pp'
