@@ -1,0 +1,14 @@
++++ 0.5.0 2007-05-06
+
++ 1 major enhancement:
+  + Refactored internals to use newgem/hoe structure
+
++++ 0.4.4 2007-05-06
+
++ 1 minor improvement:
+  + Generated init.rb includes default #require statement
+
++++ 0.4.3 
+
++ 1 bugfix:
+  + Work around for RubyGems 0.9.X bug for unpack(dir) - now passes absolute path.

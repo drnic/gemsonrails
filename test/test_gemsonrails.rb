@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class GemsToRailTest < Test::Unit::TestCase
+class TestGemsonrails < Test::Unit::TestCase
 
   def setup
   end

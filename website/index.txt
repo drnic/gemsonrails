@@ -1,0 +1,56 @@
+h1. Gems On Rails
+
+h1. &#x2192; 'gemsonrails'
+
+h1. aka 'vendor everything'
+
+h2. What
+
+Link or freeze RubyGems into your rails apps, instead of just plugins. This allows you to 'vendor everything' - pushing all dependent gems into your rails app thus ensuring your application will be guaranteed to work when deployed. Your application is no longer dependent on the gems that are/aren't available on your target deployment environment.
+
+h2. Installation and The Basics
+
+First you install the gem:
+
+<pre>$ sudo gem install gemsonrails</pre>
+
+Then you deploy the gem into your target Rails application:
+
+<pre>$ cd rails_app_folder
+$ gemsonrails</pre>
+
+This installs some rake tasks into your app to help you freeze or link gems:
+
+<pre>$ rake -T | grep "gems:"
+rake gems:freeze    # Freeze a RubyGem into this Rails application; init.rb will be loaded on startup.
+rake gems:link      # Link a RubyGem into this Rails application; init.rb will be loaded on startup.
+rake gems:unfreeze  # Unfreeze/unlink a RubyGem from this Rails application
+</pre>
+
+Finally, for each gem your application uses you can either freeze a version into the app (only for gems that do not require native compilation), or link a gem with your app (useful for gems that require native compilation)
+
+<pre>$ rake gems:freeze GEM=map_by_method
+Unpacked map_by_method 0.6.0 to 'map_by_method-0.6.0'
+
+$ ls vendor/gems/map_by_method-0.6.0/
+CHANGELOG       README          Rakefile        init.rb         lib             test
+
+$ cat vendor/gems/map_by_method-0.6.0/init.rb 
+require File.join(File.dirname(__FILE__), 'lib', 'map_by_method')
+</pre>
+
+h2. Upgrading from old GemsOnRails versions
+
+All the freezing and linking functionality is in the plugin installed by the <code>gemsonrails</code> command. To upgrade, simple install the new gem version, and re-run the <code>gemsonrails</code> command. You application will now have the newest rake tasks and functionality.
+
+h2. Forum
+
+"http://groups.google.com/group/gemsonrails":http://groups.google.com/group/gemsonrails
+
+h2. Licence
+
+This code is free to use under the terms of the MIT licence. 
+
+h2. Contact
+
+Comments are welcome. Send an email to "Dr Nic Williams":mailto:drnicwilliams@gmail.com.

@@ -1,81 +1,89 @@
 require 'rubygems'
 require 'rake'
 require 'rake/clean'
+require 'rake/testtask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'rake/contrib/rubyforgepublisher'
 require 'fileutils'
+require 'hoe'
 include FileUtils
 require File.join(File.dirname(__FILE__), 'lib', 'gemsonrails', 'version')
 
-AUTHOR = "Dr Nic Williams"
-EMAIL = "drnicwilliams@gmail.com"
+AUTHOR = 'nicwilliams'  # can also be an array of Authors
+EMAIL = "your contact email for bug fixes and info"
 DESCRIPTION = "Link or freeze RubyGems into your rails apps, instead of plugins"
-HOMEPATH = 'http://gemsonrails.rubyforge.org'
-BIN_FILES = %w( gemsonrails )
-RUBYFORGE_PROJECT = 'gemsonrails'
-
+GEM_NAME = 'gemsonrails' # what ppl will type to install your gem
+RUBYFORGE_PROJECT = 'gemsonrails' # The unix name for your project
+HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
+DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 
 NAME = "gemsonrails"
-REV = File.read(".svn/entries")[/committed-rev="(d+)"/, 1] rescue nil
-VERS = ENV['VERSION'] || (GemsOnRails::VERSION::STRING + (REV ? ".#{REV}" : ""))
-CLEAN.include ['**/.*.sw?', '*.gem', '.config']
-RDOC_OPTS = ['--quiet', '--title', "gemsonrails documentation",
+REV = nil # UNCOMMENT IF REQUIRED: File.read(".svn/entries")[/committed-rev="(d+)"/, 1] rescue nil
+VERS = GemsOnRails::VERSION::STRING + (REV ? ".#{REV}" : "")
+CLEAN.include ['**/.*.sw?', '*.gem', '.config', '**/.DS_Store']
+RDOC_OPTS = ['--quiet', '--title', 'gemsonrails documentation',
     "--opname", "index.html",
     "--line-numbers", 
     "--main", "README",
     "--inline-source"]
 
-desc "Packages up gemsonrails gem."
-task :default => [:test]
-task :package => [:clean]
-
-task :test do
-  require File.dirname(__FILE__) + '/test/all_tests.rb'
+class Hoe
+  def extra_deps 
+    @extra_deps.reject { |x| Array(x).first == 'hoe' } 
+  end 
 end
 
-spec =
-    Gem::Specification.new do |s|
-        s.name = NAME
-        s.version = VERS
-        s.platform = Gem::Platform::RUBY
-        s.rubyforge_project = RUBYFORGE_PROJECT
-        s.has_rdoc = true
-        s.extra_rdoc_files = ["README", "CHANGELOG"]
-        s.rdoc_options += RDOC_OPTS + ['--exclude', '^(examples|extras)/']
-        s.summary = DESCRIPTION
-        s.description = DESCRIPTION
-        s.author = AUTHOR
-        s.email = EMAIL
-        s.homepage = HOMEPATH
-        s.executables = BIN_FILES
-        s.bindir = "bin"
-        s.require_path = "lib"
-
-        #s.add_dependency('activesupport', '>=1.3.1')
-        #s.required_ruby_version = '>= 1.8.2'
-
-        s.files = %w(README CHANGELOG Rakefile) +
-          Dir.glob("{bin,doc,test,lib,templates,extras,website,script}/**/*") + 
-          Dir.glob("ext/**/*.{h,c,rb}") +
-          Dir.glob("examples/**/*.rb") +
-          Dir.glob("tools/*.rb")
-        
-        # s.extensions = FileList["ext/**/extconf.rb"].to_a
-    end
-
-Rake::GemPackageTask.new(spec) do |p|
-    #p.need_tar = true
-    p.gem_spec = spec
+# Generate all the Rake tasks
+# Run 'rake -T' to see list of generated tasks (from gem root directory)
+hoe = Hoe.new(GEM_NAME, VERS) do |p|
+  p.author = AUTHOR 
+  p.description = DESCRIPTION
+  p.email = EMAIL
+  p.summary = DESCRIPTION
+  p.url = HOMEPATH
+  p.rubyforge_name = RUBYFORGE_PROJECT if RUBYFORGE_PROJECT
+  p.test_globs = ["test/**/test_*.rb"]
+  p.clean_globs = CLEAN  #An array of file patterns to delete on clean.
+  
+  # == Optional
+  p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
+  #p.extra_deps = []     # An array of rubygem dependencies [name, version], e.g. [ ['active_support', '>= 1.3.1'] ]
+  #p.spec_extras = {}    # A hash of extra values to set in the gemspec.
 end
 
-task :install do
-  name = "#{NAME}-#{VERS}.gem"
-  sh %{rake package}
-  sh %{sudo gem install pkg/#{name}}
+
+desc 'Generate website files'
+task :website_generate do
+  Dir['website/**/*.txt'].each do |txt|
+    sh %{ ruby scripts/txt2html #{txt} > #{txt.gsub(/txt$/,'html')} }
+  end
 end
 
-task :uninstall => [:clean] do
-  sh %{sudo gem uninstall #{NAME}}
+desc 'Upload website files to rubyforge'
+task :website_upload do
+  config = YAML.load(File.read(File.expand_path("~/.rubyforge/user-config.yml")))
+  host = "#{config["username"]}@rubyforge.org"
+  remote_dir = "/var/www/gforge-projects/#{RUBYFORGE_PROJECT}/"
+  # remote_dir = "/var/www/gforge-projects/#{RUBYFORGE_PROJECT}/#{GEM_NAME}"
+  local_dir = 'website'
+  sh %{rsync -av #{local_dir}/ #{host}:#{remote_dir}}
+end
+
+desc 'Generate and upload website files'
+task :website => [:website_generate, :website_upload]
+
+desc 'Release the website and new gem version'
+task :deploy => [:check_version, :website, :release]
+
+task :check_version do
+  unless ENV['VERSION']
+    puts 'Must pass a VERSION=x.y.z release version'
+    exit
+  end
+  unless ENV['VERSION'] == VERS
+    puts "Please update your version.rb to match the release version, currently #{VERS}"
+    exit
+  end
 end

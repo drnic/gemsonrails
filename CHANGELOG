@@ -1,2 +1,0 @@
-0.4.3 
-Work around for RubyGems 0.9.X bug for unpack(dir) - now passes absolute path.
