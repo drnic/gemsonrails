@@ -36,14 +36,11 @@ eos
       
       (gem = Gem::Installer.new(path)).unpack(abs_target_dir)
       chdir target_dir, :verbose => false do
-        # TODO
-        #require 'pp'
-        #pp gem
-        #pp gem.methods.sort
-        if !File.exists?('init.rb') #&& gem.autorequire
+        if !File.exists?('init.rb')
           File.open('init.rb', 'w') do |file|
             file << <<-eos
 #require something
+require File.join(File.dirname(__FILE__), 'lib', '#{gem_name}')
 eos
           end
         end
