@@ -13,7 +13,10 @@ eos
 
     # ONLY=development[,test] etc
     only_list = (ENV['ONLY'] || "").split(',')
-    only_if_begin = only_list.size == 0 ? "" : "if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])"
+    only_if_begin = only_list.size == 0 ? "" : <<-EOS
+ENV['RAILS_ENV'] ||= 'development'
+if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])"
+  EOS
     only_if_end   = only_list.size == 0 ? "" : "end"
 
     require 'rubygems'
