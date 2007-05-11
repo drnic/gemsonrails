@@ -32,20 +32,19 @@ gems_path  = File.join(plugins, 'gemsonrails')
 tasks_path = File.join(gems_path, 'tasks')
 task_templates = Dir[File.join(templates, '*.rake')]
 
-FileUtils.rm_rf gems_path
+FileUtils.mkdir_p gems_path
 
-Dir.mkdir gems_path
 Dir.chdir gems_path do
   template = File.open(templates + 'init.rb','r') {|f| f.readlines.join}
   File.open('init.rb', 'w') {|file| file << template }
 end
 
-Dir.mkdir tasks_path
+FileUtils.mkdir_p tasks_path
 Dir.chdir tasks_path do
   task_templates.each do |template_name|
     task_name = File.basename(template_name).sub(/\Atasks_/,'')
     template = File.open(template_name,'r') {|f| f.readlines.join}
-    File.open(task_name, 'w') {|file| file << template }
+    File.open(task_name, 'w') { |file| file << template }
   end
 end
 

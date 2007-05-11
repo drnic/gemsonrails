@@ -1,3 +1,11 @@
++++ 0.6.0 2007-05-11
+
++ 1 major enhancement:
+  + Linked/frozen gems can be loaded only for certain RAILS_ENVs using ONLY env variable, e.g.
+    rake gems:freeze GEM=helper ONLY=development,test
++ 1 minor enhancement:
+  + Reinstalling gemsonrails does not delete the original (and its svn meta-data), just overwrites the files
+
 +++ 0.5.0 2007-05-06
 
 + 1 major enhancement:

@@ -6,11 +6,17 @@ namespace :gems do
 Parameters:
   GEM      Name of gem (required)
   VERSION  Version of gem to freeze (optional)
+  ONLY     RAILS_ENVs for which the GEM will be active (optional)
   
 eos
       break
     end
     
+    # ONLY=development[,test] etc
+    only_list = (ENV['ONLY'] || "").split(',')
+    only_if_begin = only_list.size == 0 ? "" : "if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])"
+    only_if_end   = only_list.size == 0 ? "" : "end"
+
     require 'rubygems'
     Gem.manage_gems
     
@@ -39,8 +45,9 @@ eos
         if !File.exists?('init.rb')
           File.open('init.rb', 'w') do |file|
             file << <<-eos
-#require something
-require File.join(File.dirname(__FILE__), 'lib', '#{gem_name}')
+#{only_if_begin}
+  require File.join(File.dirname(__FILE__), 'lib', '#{gem_name}')
+#{only_if_end}
 eos
           end
         end

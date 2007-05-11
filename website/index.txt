@@ -21,7 +21,7 @@ $ gemsonrails</pre>
 
 This installs some rake tasks into your app to help you freeze or link gems:
 
-<pre>$ rake -T | grep "gems:"
+<pre syntax="ruby">$ rake -T | grep "gems:"
 rake gems:freeze    # Freeze a RubyGem into this Rails application; init.rb will be loaded on startup.
 rake gems:link      # Link a RubyGem into this Rails application; init.rb will be loaded on startup.
 rake gems:unfreeze  # Unfreeze/unlink a RubyGem from this Rails application
@@ -29,7 +29,7 @@ rake gems:unfreeze  # Unfreeze/unlink a RubyGem from this Rails application
 
 Finally, for each gem your application uses you can either freeze a version into the app (only for gems that do not require native compilation), or link a gem with your app (useful for gems that require native compilation)
 
-<pre>$ rake gems:freeze GEM=map_by_method
+<pre syntax="ruby">$ rake gems:freeze GEM=map_by_method
 Unpacked map_by_method 0.6.0 to 'map_by_method-0.6.0'
 
 $ ls vendor/gems/map_by_method-0.6.0/
@@ -38,6 +38,16 @@ CHANGELOG       README          Rakefile        init.rb         lib             
 $ cat vendor/gems/map_by_method-0.6.0/init.rb 
 require File.join(File.dirname(__FILE__), 'lib', 'map_by_method')
 </pre>
+
+h2. Restricting which environments a gem is loaded into
+
+You can restrict which RAILS_ENVs the gem will be loaded for, using ONLY; e.g.
+
+<pre syntax="ruby">$ rake gems:freeze GEM=<gemname> ONLY=development
+$ rake gems:link GEM=<gemname> ONLY=production,staging
+</pre>
+
+In the former, only in *development* mode will the gem be loaded. In the latter, only in *production* or *staging* mode will the gem be loaded from the deployment gem server
 
 h2. Upgrading from old GemsOnRails versions
 

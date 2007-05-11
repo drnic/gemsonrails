@@ -33,7 +33,7 @@
     <h1>Gems On Rails</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/gemsonrails"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/gemsonrails" class="numbers">0.5.0</a>
+      <a href="http://rubyforge.org/projects/gemsonrails" class="numbers">0.6.0</a>
     </div>
     <h1>&#x2192; &#8216;gemsonrails&#8217;</h1>
 
@@ -64,7 +64,7 @@ $ gemsonrails</pre>
 	<p>This installs some rake tasks into your app to help you freeze or link gems:</p>
 
 
-<pre>$ rake -T | grep "gems:" 
+<pre syntax="ruby">$ rake -T | grep "gems:" 
 rake gems:freeze    # Freeze a RubyGem into this Rails application; init.rb will be loaded on startup.
 rake gems:link      # Link a RubyGem into this Rails application; init.rb will be loaded on startup.
 rake gems:unfreeze  # Unfreeze/unlink a RubyGem from this Rails application
@@ -73,7 +73,7 @@ rake gems:unfreeze  # Unfreeze/unlink a RubyGem from this Rails application
 	<p>Finally, for each gem your application uses you can either freeze a version into the app (only for gems that do not require native compilation), or link a gem with your app (useful for gems that require native compilation)</p>
 
 
-<pre>$ rake gems:freeze GEM=map_by_method
+<pre syntax="ruby">$ rake gems:freeze GEM=map_by_method
 Unpacked map_by_method 0.6.0 to 'map_by_method-0.6.0'
 
 $ ls vendor/gems/map_by_method-0.6.0/
@@ -82,6 +82,19 @@ CHANGELOG       README          Rakefile        init.rb         lib             
 $ cat vendor/gems/map_by_method-0.6.0/init.rb 
 require File.join(File.dirname(__FILE__), 'lib', 'map_by_method')
 </pre>
+
+	<h2>Restricting which environments a gem is loaded into</h2>
+
+
+	<p>You can restrict which <span class="caps">RAILS</span>_ENVs the gem will be loaded for, using <span class="caps">ONLY</span>; e.g.</p>
+
+
+<pre syntax="ruby">$ rake gems:freeze GEM=&lt;gemname&gt; ONLY=development
+$ rake gems:link GEM=&lt;gemname&gt; ONLY=production,staging
+</pre>
+
+	<p>In the former, only in <strong>development</strong> mode will the gem be loaded. In the latter, only in <strong>production</strong> or <strong>staging</strong> mode will the gem be loaded from the deployment gem server</p>
+
 
 	<h2>Upgrading from old GemsOnRails versions</h2>
 
@@ -106,7 +119,7 @@ require File.join(File.dirname(__FILE__), 'lib', 'map_by_method')
 
 	<p>Comments are welcome. Send an email to <a href="mailto:drnicwilliams@gmail.com">Dr Nic Williams</a>.</p>
     <p class="coda">
-      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 6th May 2007<br>
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 11th May 2007<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>

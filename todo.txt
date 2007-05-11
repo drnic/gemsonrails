@@ -1,0 +1,19 @@
+h1. Alternate start files
+
+For exchange with Glenn Rempe:
+
+The problem is that the generated init.rb for the frozen gem guesses incorrectly as to which root file to 'require'
+
+In vendor/gems/net-ssh-1.X.X/init.rb you'll see:
+require File.join(File.dirname(__FILE__), 'lib', 'net-ssh')
+
+But this points to an invalid file. Try "mongrel_rails start" to get a better error message to show this problem.
+
+So change it to:
+require File.join(File.dirname(__FILE__), 'lib', 'net', 'ssh')
+
+This generated init.rb makes a best guess about the start file, I guess it could do with some tweaking; or at least test whether the file exists and perhaps try some other algorithms; e.g.
+
+path = "#{$1}/#{$2}" if name[/(\w+)-(\w+)/]
+
+Anyway, I'll put this on the todo list.

@@ -77,6 +77,8 @@ task :website => [:website_generate, :website_upload]
 desc 'Release the website and new gem version'
 task :deploy => [:check_version, :website, :release]
 
+task :local_deploy => [:website_generate, :install_gem]
+
 task :check_version do
   unless ENV['VERSION']
     puts 'Must pass a VERSION=x.y.z release version'

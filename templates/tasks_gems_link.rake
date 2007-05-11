@@ -5,11 +5,16 @@ namespace :gems do
 		  puts <<-eos
 Parameters:
   GEM      Name of gem (required)
-
+  ONLY     RAILS_ENVs for which the GEM will be active (optional)
   
 eos
       break
 		end
+
+    # ONLY=development[,test] etc
+    only_list = (ENV['ONLY'] || "").split(',')
+    only_if_begin = only_list.size == 0 ? "" : "if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])"
+    only_if_end   = only_list.size == 0 ? "" : "end"
 
     require 'rubygems'
     Gem.manage_gems
@@ -32,26 +37,30 @@ eos
       chdir target_dir, :verbose => false do
         File.open('init.rb', 'w') do |file|
           file << <<-eos
-require 'rubygems'
-Gem.manage_gems
-gem = Gem.cache.search('#{gem.name}').sort_by { |g| g.version }.last
-if gem.autorequire
-  require gem.autorequire
-else
-  require '#{gem.name}'
-end
+#{only_if_begin}
+  require 'rubygems'
+  Gem.manage_gems
+  gem = Gem.cache.search('#{gem.name}').sort_by { |g| g.version }.last
+  if gem.autorequire
+    require gem.autorequire
+  else
+    require '#{gem.name}'
+  end
+#{only_if_end}
 eos
         end
         File.open(File.join('tasks', 'load_tasks.rake'), 'w') do |file|
           file << <<-eos
 # This file does not include any Rake files, but loads up the 
 # tasks in the /vendor/gems/ folders
-require 'rubygems'
-Gem.manage_gems
-gem = Gem.cache.search('#{gem.name}').sort_by { |g| g.version }.last
-raise \"Gem '#{gem.name}' is not installed\" if gem.nil?
-path = gem.full_gem_path
-Dir[File.join(path, "/**/tasks/**/*.rake")].sort.each { |ext| load ext }
+#{only_if_begin}
+  require 'rubygems'
+  Gem.manage_gems
+  gem = Gem.cache.search('#{gem.name}').sort_by { |g| g.version }.last
+  raise \"Gem '#{gem.name}' is not installed\" if gem.nil?
+  path = gem.full_gem_path
+  Dir[File.join(path, "/**/tasks/**/*.rake")].sort.each { |ext| load ext }
+#{only_if_end}
 eos
         end
         puts "Linked #{gem_name} (currently #{version}) via 'vendor/gems/#{target_dir}'"
