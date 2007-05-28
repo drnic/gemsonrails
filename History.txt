@@ -1,40 +1,41 @@
-+++ 0.6.3 2007-05-28
+== 0.6.3 2007-05-28
 
-+ 1 critical bugfix:
-  + freeze task broke under RubyGems 0.9.3 release; fix by [Brian Cook]
-+ 1 minor enhancement:
-  + When rerunning the link/freeze tasks for an existing gem, the vendor/gems/xxx folder is no longer
+* 1 critical bugfix:
+  * freeze task broke under RubyGems 0.9.3 release; fix by [Brian Cook]
+* 2 minor enhancements:
+  * When rerunning the link/freeze tasks for an existing gem, the vendor/gems/xxx folder is no longer
     deleted and then recreated. Unforunately its not deleting any files either (TODO)
+  * Changed #deploy task to output svn tagging command
 
-+++ 0.6.2 2007-05-14
+== 0.6.2 2007-05-14
 
-+ 1 bugfix:
-    + Using ONLY generated incorrect code (extraneous ")
+* 1 bugfix:
+    * Using ONLY generated incorrect code (extraneous ")
 
-+++ 0.6.1 2007-05-11
+== 0.6.1 2007-05-11
 
-+ 1 minor enhancement:
-    + ENV['RAILS_ENV'] defaults to 'development' if not specified, but required for ONLY test
+* 1 minor enhancement:
+    * ENV['RAILS_ENV'] defaults to 'development' if not specified, but required for ONLY test
 
-+++ 0.6.0 2007-05-11
+== 0.6.0 2007-05-11
 
-+ 1 major enhancement:
-  + Linked/frozen gems can be loaded only for certain RAILS_ENVs using ONLY env variable, e.g.
+* 1 major enhancement:
+  * Linked/frozen gems can be loaded only for certain RAILS_ENVs using ONLY env variable, e.g.
     rake gems:freeze GEM=helper ONLY=development,test
-+ 1 minor enhancement:
-  + Reinstalling gemsonrails does not delete the original (and its svn meta-data), just overwrites the files
+* 1 minor enhancement:
+  * Reinstalling gemsonrails does not delete the original (and its svn meta-data), just overwrites the files
 
-+++ 0.5.0 2007-05-06
+== 0.5.0 2007-05-06
 
-+ 1 major enhancement:
-  + Refactored internals to use newgem/hoe structure
+* 1 major enhancement:
+  * Refactored internals to use newgem/hoe structure
 
-+++ 0.4.4 2007-05-06
+== 0.4.4 2007-05-06
 
-+ 1 minor improvement:
-  + Generated init.rb includes default #require statement
+* 1 minor improvement:
+  * Generated init.rb includes default #require statement
 
-+++ 0.4.3 
+== 0.4.3 
 
-+ 1 bugfix:
-  + Work around for RubyGems 0.9.X bug for unpack(dir) - now passes absolute path.
+* 1 bugfix:
+  * Work around for RubyGems 0.9.X bug for unpack(dir) - now passes absolute path.
