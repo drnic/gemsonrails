@@ -1,7 +1,7 @@
 +++ 0.6.3 2007-05-28
 
 + 1 critical bugfix:
-  + freeze task broke under RubyGems 0.9.3 release; fix by [Brian Cooke]
+  + freeze task broke under RubyGems 0.9.3 release; fix by [Brian Cook]
 + 1 minor enhancement:
   + When rerunning the link/freeze tasks for an existing gem, the vendor/gems/xxx folder is no longer
     deleted and then recreated. Unforunately its not deleting any files either (TODO)
