@@ -16,12 +16,13 @@ eos
     only_list = (ENV['ONLY'] || "").split(',')
     only_if_begin = only_list.size == 0 ? "" : <<-EOS
 ENV['RAILS_ENV'] ||= 'development'
-if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])"
+if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
   EOS
     only_if_end   = only_list.size == 0 ? "" : "end"
 
     require 'rubygems'
     Gem.manage_gems
+    Gem::CommandManager.new
     
     gem = (version = ENV['VERSION']) ?
       Gem.cache.search(gem_name, "= #{version}").first :
@@ -29,7 +30,8 @@ if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])"
     
     version ||= gem.version.version rescue nil
     
-    unless gem && path = Gem::UnpackCommand.new.get_path(gem_name, version)
+    unpack_command_class = Gem::UnpackCommand rescue nil || Gem::Commands::UnpackCommand
+    unless gem && path = unpack_command_class.new.get_path(gem_name, version)
       raise "No gem #{gem_name} #{version} is installed.  Do 'gem list #{gem_name}' to see what you have available."
     end
     
@@ -37,7 +39,7 @@ if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])"
     mkdir_p gems_dir, :verbose => false if !File.exists?(gems_dir)
     
     target_dir = ENV['TO'] || File.basename(path).sub(/\.gem$/, '')
-    rm_rf "vendor/gems/#{target_dir}", :verbose => false
+    mkdir_p "vendor/gems/#{target_dir}", :verbose => false
     
     chdir gems_dir, :verbose => false do
       mkdir_p target_dir, :verbose => false

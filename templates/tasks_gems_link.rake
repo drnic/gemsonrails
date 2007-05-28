@@ -15,7 +15,7 @@ eos
     only_list = (ENV['ONLY'] || "").split(',')
     only_if_begin = only_list.size == 0 ? "" : <<-EOS
 ENV['RAILS_ENV'] ||= 'development'
-if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])"
+if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
   EOS
     only_if_end   = only_list.size == 0 ? "" : "end"
 
@@ -33,7 +33,7 @@ if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])"
     mkdir_p gems_dir, :verbose => false if !File.exists?(gems_dir)
     
     target_dir = ENV['TO'] || gem.name
-    rm_rf "vendor/gems/#{target_dir}", :verbose => false
+    mkdir_p "vendor/gems/#{target_dir}"
     
     chdir gems_dir, :verbose => false do
       mkdir_p target_dir + '/tasks', :verbose => false
