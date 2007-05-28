@@ -53,6 +53,9 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   #p.spec_extras = {}    # A hash of extra values to set in the gemspec.
 end
 
+CHANGES = hoe.paragraphs_of('History.txt', 0..1).join("\n\n")
+PATH    = (RUBYFORGE_PROJECT == GEM_NAME) ? RUBYFORGE_PROJECT : "\#{RUBYFORGE_PROJECT}/\#{GEM_NAME}"
+hoe.remote_rdoc_dir = File.join(PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,''), 'rdoc')
 
 desc 'Generate website files'
 task :website_generate do
@@ -66,7 +69,6 @@ task :website_upload do
   config = YAML.load(File.read(File.expand_path("~/.rubyforge/user-config.yml")))
   host = "#{config["username"]}@rubyforge.org"
   remote_dir = "/var/www/gforge-projects/#{RUBYFORGE_PROJECT}/"
-  # remote_dir = "/var/www/gforge-projects/#{RUBYFORGE_PROJECT}/#{GEM_NAME}"
   local_dir = 'website'
   sh %{rsync -av #{local_dir}/ #{host}:#{remote_dir}}
 end

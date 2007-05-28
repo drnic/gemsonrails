@@ -10,12 +10,12 @@
 == 0.6.2 2007-05-14
 
 * 1 bugfix:
-    * Using ONLY generated incorrect code (extraneous ")
+  * Using ONLY generated incorrect code (extraneous ")
 
 == 0.6.1 2007-05-11
 
 * 1 minor enhancement:
-    * ENV['RAILS_ENV'] defaults to 'development' if not specified, but required for ONLY test
+  * ENV['RAILS_ENV'] defaults to 'development' if not specified, but required for ONLY test
 
 == 0.6.0 2007-05-11
 
