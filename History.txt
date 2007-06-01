@@ -6,6 +6,8 @@
   * When rerunning the link/freeze tasks for an existing gem, the vendor/gems/xxx folder is no longer
     deleted and then recreated. Unforunately its not deleting any files either (TODO)
   * Changed #deploy task to output svn tagging command
+* 1 website improvement:
+  * website/index.txt includes link to "8 steps to fix other ppls code"
 
 == 0.6.2 2007-05-14
 
