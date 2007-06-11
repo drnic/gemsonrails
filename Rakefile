@@ -13,7 +13,10 @@ require File.join(File.dirname(__FILE__), 'lib', 'gemsonrails', 'version')
 
 AUTHOR = 'nicwilliams'  # can also be an array of Authors
 EMAIL = "your contact email for bug fixes and info"
-DESCRIPTION = "Link or freeze RubyGems into your rails apps, instead of plugins"
+DESCRIPTION = <<-EOS
+Link or freeze RubyGems into your rails apps, instead of plugins
+To reinstall, run "gemsonrails" in rails app folder.
+  EOS
 GEM_NAME = 'gemsonrails' # what ppl will type to install your gem
 config = YAML.load(File.read(File.expand_path("~/.rubyforge/user-config.yml")))
 RUBYFORGE_USERNAME = config["username"]

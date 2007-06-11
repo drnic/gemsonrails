@@ -25,7 +25,8 @@ if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
     gem = Gem.cache.search(gem_name).sort_by { |g| g.version }.last
     version ||= gem.version.version rescue nil
     
-    unless gem && path = Gem::UnpackCommand.new.get_path(gem_name, version)
+    unpack_command_class = Gem::UnpackCommand rescue nil || Gem::Commands::UnpackCommand
+    unless gem && path = unpack_command_class.new.get_path(gem_name, version)
       raise "No gem #{gem_name} is installed.  Try 'gem install #{gem_name}' to install the gem."
     end
     
