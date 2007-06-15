@@ -1,3 +1,8 @@
+h1. Gem load order
+
+Frozen/linked gems may be dependent on other gems that are frozen or linked and need them loaded in that order. 
+
+
 h1. Alternate start files
 
 For exchange with Glenn Rempe:
