@@ -1,6 +1,6 @@
 gems = Dir[File.join(RAILS_ROOT, "vendor/gems/*")]
 if gems.any?
-  gems.each do |dir|
+  gems.sort.each do |dir|
     lib = File.join(dir, 'lib')
     $LOAD_PATH.unshift(lib) if File.directory?(lib)
     init_rb = File.join(dir, 'init.rb')
