@@ -19,6 +19,7 @@ ENV['RAILS_ENV'] ||= 'development'
 if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
   EOS
     only_if_end   = only_list.size == 0 ? "" : "end"
+    only_if_tab   = only_list.size == 0 ? "" : "  "
 
     require 'rubygems'
     Gem.manage_gems
@@ -49,11 +50,23 @@ if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
       chdir target_dir, :verbose => false do
         if !File.exists?('init.rb')
           File.open('init.rb', 'w') do |file|
+            path_options = [gem_name, gem_name.split('-').join('/')].uniq
+            code = <<-eos
+require_options = #{path_options.inspect}
+if require_lib = require_options.find { |path|  File.directory?(File.join(File.dirname(__FILE__), 'lib', path)) }
+  require File.join(File.dirname(__FILE__), 'lib', require_lib)
+else
+  puts msg = "ERROR: Please update \#{File.expand_path __FILE__} with the require path for linked RubyGem #{gem_name}"
+  exit
+end
+            eos
+            tabbed_code = code.split("\n").map { |line| line = "#{only_if_tab}#{line}" }.join("\n")
+
             file << <<-eos
 #{only_if_begin}
-  require File.join(File.dirname(__FILE__), 'lib', '#{gem_name}')
+#{tabbed_code}
 #{only_if_end}
-eos
+            eos
           end
         end
       end

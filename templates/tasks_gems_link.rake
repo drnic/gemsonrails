@@ -18,9 +18,11 @@ ENV['RAILS_ENV'] ||= 'development'
 if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
   EOS
     only_if_end   = only_list.size == 0 ? "" : "end"
+    only_if_tab   = only_list.size == 0 ? "" : "  "
 
     require 'rubygems'
     Gem.manage_gems
+    Gem::CommandManager.new
     
     gem = Gem.cache.search(gem_name).sort_by { |g| g.version }.last
     version ||= gem.version.version rescue nil
@@ -40,16 +42,31 @@ if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
       mkdir_p target_dir + '/tasks', :verbose => false
       chdir target_dir, :verbose => false do
         File.open('init.rb', 'w') do |file|
+          path_options = [gem_name, gem_name.split('-').join('/')].uniq
+          code = <<-eos
+require 'rubygems'
+Gem.manage_gems
+gem = Gem.cache.search('#{gem.name}').sort_by { |g| g.version }.last
+if gem.autorequire
+  require gem.autorequire
+else
+  require_options = #{path_options.inspect}
+  unless require_options.find do |path|
+      begin
+        require path 
+      rescue MissingSourceFile 
+        nil
+      end
+    end
+    puts msg = "ERROR: Please update \#{File.expand_path __FILE__} with the require path for linked RubyGem #{gem_name}"
+    exit
+  end
+end
+          eos
+          tabbed_code = code.split("\n").map { |line| line = "#{only_if_tab}#{line}" }.join("\n")
           file << <<-eos
 #{only_if_begin}
-  require 'rubygems'
-  Gem.manage_gems
-  gem = Gem.cache.search('#{gem.name}').sort_by { |g| g.version }.last
-  if gem.autorequire
-    require gem.autorequire
-  else
-    require '#{gem.name}'
-  end
+#{tabbed_code}
 #{only_if_end}
 eos
         end

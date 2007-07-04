@@ -1,5 +1,6 @@
-== TRUNK
+== 0.7.0 2007-07-04
 
+* Fixed the gems:freeze/link issue for gems like net-ssh, net-sftp (you'll need to refreeze these gems after rerunning gemsonrails)
 * Gems loaded in alphabetic, deterministic order [thx Jodi Showers]
 
 == 0.6.4 2007-06-11
