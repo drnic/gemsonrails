@@ -1,3 +1,7 @@
+== 0.7.1 2007-11-29
+
+* Using RubyGems 0.9.5? Use these upgraded tasks to support RubyGems 0.9.5 [thx Brent Beardsley]
+
 == 0.7.0 2007-07-04
 
 * Fixed the gems:freeze/link issue for gems like net-ssh, net-sftp (you'll need to refreeze these gems after rerunning gemsonrails)

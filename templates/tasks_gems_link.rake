@@ -21,8 +21,14 @@ if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
     only_if_tab   = only_list.size == 0 ? "" : "  "
 
     require 'rubygems'
-    Gem.manage_gems
-    Gem::CommandManager.new
+    # RubyGems <0.9.5
+    # Gem.manage_gems
+    # Gem::CommandManager.new
+    
+    # RubyGems >=0.9.5
+    require 'rubygems/command_manager'
+    require 'rubygems/commands/unpack_command'
+    Gem::CommandManager.instance
     
     gem = Gem.cache.search(gem_name).sort_by { |g| g.version }.last
     version ||= gem.version.version rescue nil
