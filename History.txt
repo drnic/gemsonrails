@@ -1,3 +1,7 @@
+== 0.7.3 2008-07-09 NOT RELEASED YET
+
+* Look for File.file?(...) instead of File.directory? [Nat Budin]
+
 == 0.7.2 2008-01-29
 
 * Loads vendored gems lib path into LOAD_PATH first, then runs any gem init.rb files [thx Chris Kampmeier]
